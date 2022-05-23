@@ -11,25 +11,25 @@ async function copyDir(sourcePath, destinationPath){
   const sourceFiles = await fs.readdir(sourcePath, {withFileTypes: false});
   const destFiles = await fs.readdir(destinationPath, {withFileTypes: false});
   
-  destFiles.forEach(async (file) => {
+  for (let file of destFiles) {
     if (!sourceFiles.includes(file)) {
       await fs.rm(path.join(destinationPath, file));
-      console.log(`${file} deleted.`);
+      console.log(`${file} deleted`);
     }
-  });
+  }
   
-  sourceFiles.forEach(async (file) => {
+  for (let file of sourceFiles){
     const overwritten = destFiles.includes(file);
     await fs.copyFile(
       path.join(sourcePath, file),
       path.join(destinationPath, file)
     );
     console.log(`${file} ${overwritten ? 'overwritten' : 'copied'}.`);
-  });  
+  }
 }
 
 // -------------
-console.log(`Copying from "/${sourceDirPath}/" to "/${destinationDirPath}/"`);
+console.log(`Copying from "/${sourceDirPath}" to "/${destinationDirPath}"`);
 (async () => {
   try {
     await copyDir(fullSourcePath, fullDestinationPath);
