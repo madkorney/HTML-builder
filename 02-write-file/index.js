@@ -12,7 +12,7 @@ process.on('SIGINT', () => {
 });
 
 stdin.on('data', data => {
-  if (data.toString().substring(0, 4) === 'exit') {
+  if (data.toString().trim().substring(0, 4) === 'exit') {
     stdout.write(`input completed. file is written at : ${filePathName}\n`);
     writeStream.close();
     process.exit();
