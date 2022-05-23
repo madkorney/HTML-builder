@@ -36,10 +36,6 @@ async function mergeStyles(sourcePath, destinationPath){
     console.log(`part ${index} added to bundle`);
     index += 1;
   }  
-  // cssFilesContent.forEach(async (part, index) => {
-  //   await fs.appendFile(path.join(fullDestinationPath, destinationBundleName), part);
-  //   console.log(`part ${index} added to bundle`);
-  // });
 }
 
 // -------------
