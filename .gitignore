@@ -108,3 +108,4 @@ support/
 02-write-file/text.txt
 .vscode/
 04-copy-directory/files-copy/
+05-merge-styles/project-dist/bundle.css
