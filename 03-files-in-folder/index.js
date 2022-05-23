@@ -1,6 +1,5 @@
 const fs = require('fs');
 const path = require('path');
-// const { exitCode } = require('process');
 
 const dirPath = 'secret-folder';
 const fullPathName = path.join(__dirname, dirPath);
@@ -22,8 +21,7 @@ fs.readdir(fullPathName, {withFileTypes: true}, (err, filesData) => {
     process.exit();
   }
 
-  filesData.forEach(file => {
-    // if (file.isDirectory()) console.log(`[${file.name}] is DIR, skip`);
+  for (let file of filesData) {
     if (file.isFile()) {
       fs.stat(path.join(fullPathName, file.name), (err, stats) => {
         if (err) {
@@ -43,7 +41,7 @@ fs.readdir(fullPathName, {withFileTypes: true}, (err, filesData) => {
           fileSizeStr);
       });
     }
-  });
+  }
 });
   
 
