@@ -109,3 +109,4 @@ support/
 .vscode/
 04-copy-directory/files-copy/
 05-merge-styles/project-dist/bundle.css
+06-build-page/project-dist/
