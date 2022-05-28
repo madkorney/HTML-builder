@@ -23,7 +23,7 @@ function formatExtension(extension) {
   return output;
 }
 
-function formatSize(fileSize) {
+function formatFileSize(fileSize) {
   const output = `${Math.trunc(fileSize / 1024 * 10)/10} KiB`.padStart(8);
   return output;
 }
@@ -51,7 +51,7 @@ async function readDirectory() {
 
         const basename = formatBasename(getBasename(item.name));
         const extension = formatExtension(getExtension(item.name));
-        const fileSize = formatSize(getFileSize(fileStats));
+        const fileSize = formatFileSize(getFileSize(fileStats));
         console.log(`${basename}  - ${extension} - ${fileSize}`);
       }
     }
