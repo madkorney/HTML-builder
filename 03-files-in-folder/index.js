@@ -1,47 +1,73 @@
-const fs = require('fs');
+const fs = require('fs/promises');
 const path = require('path');
 
-const dirPath = 'secret-folder';
-const fullPathName = path.join(__dirname, dirPath);
+function getBasename(fileName) {
+  return path.parse(fileName).name;
+} 
 
-console.log(`Reading path : "${fullPathName}"...`);
-console.log('────────────────────────────────────');
-console.log('file name      -  ext    - file size');
-console.log('────────────────────────────────────');
+function getExtension(fileName) {
+  return path.parse(fileName).ext.slice(1);
+}
 
-fs.readdir(fullPathName, {withFileTypes: true}, (err, filesData) => {
-  if (err) {
+function getFileSize(fileStats) {
+  return fileStats.size;
+}
+
+function formatBasename(basename) {
+  const output  = basename.padEnd(13,' ');
+  return output;
+}
+
+function formatExtension(extension) {
+  const output  = extension.padEnd(7,' ');
+  return output;
+}
+
+function formatSize(fileSize) {
+  const output = `${Math.trunc(fileSize / 1024 * 10)/10} KiB`.padStart(8);
+  return output;
+}
+
+async function readDirectory() {
+  const pathToDir = 'secret-folder';
+  const fullPathToDir = path.join(__dirname, pathToDir);
+
+  function printHeader(fullPathToDir){
+    console.log(`Reading path : "${fullPathToDir}"...`);
+    console.log('────────────────────────────────────');
+    console.log('file name      - ext     - file size');
+    console.log('────────────────────────────────────');
+  }
+
+  try {
+    printHeader(fullPathToDir);
+
+    const dirContentList = await fs.readdir(fullPathToDir, {withFileTypes: true});
+    
+    for (const item of dirContentList) {
+      if (item.isFile()) {
+        const pathToFile = path.join(fullPathToDir, item.name);
+        const fileStats  = await fs.stat(pathToFile);
+
+        const basename = formatBasename(getBasename(item.name));
+        const extension = formatExtension(getExtension(item.name));
+        const fileSize = formatSize(getFileSize(fileStats));
+        console.log(`${basename}  - ${extension} - ${fileSize}`);
+      }
+    }
+
+    
+  } catch (err) {
     if (err.errno === -4058) {
-      console.log(`=Failure= Path "${fullPathName}" does not exist. Aborting..`);
-      process.exitCode = 1;
-      process.exit();
+      console.log(`=Failure= Path "${fullPathToDir}" does not exist. Aborting..`);
+      process.exit(1);
     } 
     console.log(err.message);
-    process.exitCode = 2;
-    process.exit();
+    process.exit(2);
   }
+}  
 
-  for (let file of filesData) {
-    if (file.isFile()) {
-      fs.stat(path.join(fullPathName, file.name), (err, stats) => {
-        if (err) {
-          console.log(err.message);
-          process.exitCode = 3;
-          process.exit();
-        }
-        const fileSizeStr = `${Math.trunc(stats.size / 1024 * 10)/10} kB`.padStart(8);
-        console.log(
-          path.parse(file.name).name
-            .padEnd(13,' '),
-          ' - ',
-          path.parse(file.name).ext
-            .substring(1)
-            .padEnd(5,' '),
-          ' - ', 
-          fileSizeStr);
-      });
-    }
-  }
-});
-  
 
+(async () => {
+  await readDirectory();  
+})();
